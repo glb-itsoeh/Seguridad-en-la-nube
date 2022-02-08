@@ -29,19 +29,19 @@ estadísticas recientemente generadas.
 docker stats nginx1
 11.-Los contenedores se pueden matar en lugar de detenerlos.
 docker kill nginx1
-Inspección de contenedores
-1.-Descargar la imagen de MongoDB
-docker pull mongo
+INSPECCIÓN DE CONTENEDORES
+1.-Descargar la imagen de MongoDB versión 4.2
+docker pull mongo:4.2
 docker images
 2.-Comprobar las propiedades de la imagen. Debe salir información muy detallada.
-docker image inspect mongo
+docker image inspect mongo:4.2
 3.-Filtrar la salida utilizando el comando “grep” y extraer información concreta de la imagen, como
 por ejemplo, la versión de MONGO.
 docker image inspect mongo | grep MONGO_VERSION
 4.-Enviar la salida a un fichero para visualizarlo después desde un editor de texto.
-docker image inspect mongo > mongo.json
+docker image inspect mongo:4.2 > mongo.json
 5.-Crear un contenedor con dicha imagen.
-docker run -d --name mongo1 mongo
+docker run -d --name mongo1 mongo:4.2
 docker ps
 6.-Lanzar el comando “docker inspect” contra el contenedor.
 docker inspect mongo1
@@ -52,12 +52,9 @@ docker inspect mongo1 | grep ShmSize
 8.-También existe la posibilidad de utilizar un formato para encontrar información concreta, aunque
 es necesario conocer el nombre completo de la propiedad a buscar y su jerarquía. Por ejemplo, para
 saber las direcciones IP que puede tener el contenedor.
-docker inspect --format='{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
-mongo1
-9.-docker inspect --format='{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
-mongo1
-10.-Conocer la ubicación concreta del fichero de log.
+docker inspect --format='{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mongo1
+9.-Conocer la ubicación concreta del fichero de log.
 docker inspect --format='{{.LogPath}}' mongo1
-11.-Ver la imagen que se ha utilizado para crear el contenedor.
+10.-Ver la imagen que se ha utilizado para crear el contenedor.
 docker inspect –format='{{.Config.Image}}' mongo1
 
