@@ -1,0 +1,63 @@
+Práctica Módulo 1. Parte 2 Gestión de logs, procesos y estadísticas.
+1.-Arrancar un contenedor basado en la imagen NGINX en modo background
+docker run -d --name nginx1 nginx
+docker ps
+2.-Comprobar los logs. No debe de aparecer nada ya que el contenedor ha sido creado recientemente.
+docker logs nginx1
+3.-Conexión al contenedor desde otra consola
+docker exec -it nginx1 bash
+4.-Instalación del comando “curl” en el contenedor.
+apt-get update
+apt-get install curl
+curl localhost
+5.-Comprobar nuevamente los logs.
+docker logs nginx1
+6.-Ejecutar desde otra terminal, el comando “bash” sobre el contendor creado anteriormente.
+docker exec -it nginx1 bash
+7.-Se puede comprobar con el comando “docker top” aquellos procesos que se están ejecutando en el
+contenedor. Se puede ver, además, el comando “bash” que se ha ejecutado con el comando “docker
+exec”.
+docker top nginx1
+8.-Estadísticas de uso del contenedor.
+docker stats nginx1
+9.-Para generar aún más estadísticas, desde otra terminal se ejecuta “docker exec” para lanzar el
+comando “bash” y forzar el movimiento de datos con la utilidad “dd”.
+docker exec -it nginx1 bash
+root@conedor:/# dd if=/dev/zero of=f1.dat bs=1024 count=100000000
+10.-Desde la primera terminal, ejecutar nuevamente el comando “docker stats” para visualizar las
+estadísticas recientemente generadas.
+docker stats nginx1
+11.-Los contenedores se pueden matar en lugar de detenerlos.
+docker kill nginx1
+Inspección de contenedores
+1.-Descargar la imagen de MongoDB
+docker pull mongo
+docker images
+2.-Comprobar las propiedades de la imagen. Debe salir información muy detallada.
+docker image inspect mongo
+3.-Filtrar la salida utilizando el comando “grep” y extraer información concreta de la imagen, como
+por ejemplo, la versión de MONGO.
+docker image inspect mongo | grep MONGO_VERSION
+4.-Enviar la salida a un fichero para visualizarlo después desde un editor de texto.
+docker image inspect mongo > mongo.json
+5.-Crear un contenedor con dicha imagen.
+docker run -d --name mongo1 mongo
+docker ps
+6.-Lanzar el comando “docker inspect” contra el contenedor.
+docker inspect mongo1
+7.-Utilizar nuevament el comando “grep” para extraer información concreta del contenedor. En este
+caso concreto, extraer la dirección IP asignada al contenedor.
+docker inspect mongo1 | grep IPAddress
+docker inspect mongo1 | grep ShmSize
+8.-También existe la posibilidad de utilizar un formato para encontrar información concreta, aunque
+es necesario conocer el nombre completo de la propiedad a buscar y su jerarquía. Por ejemplo, para
+saber las direcciones IP que puede tener el contenedor.
+docker inspect --format='{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
+mongo1
+9.-docker inspect --format='{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
+mongo1
+10.-Conocer la ubicación concreta del fichero de log.
+docker inspect --format='{{.LogPath}}' mongo1
+11.-Ver la imagen que se ha utilizado para crear el contenedor.
+docker inspect –format='{{.Config.Image}}' mongo1
+
