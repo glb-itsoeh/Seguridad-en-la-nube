@@ -1,0 +1,17 @@
+Práctica 01 en Docker 
+1.-Descarga de la imagen de wordpress
+$docker pull wordpress:4.7.2-apache
+2.-Descarga de la imagen mariadb
+$docker pull mariadb:10.0.29
+3.-Crear una network con el driver bridge para FrontEnd
+$docker network create --driver bridge FrontEnd
+4.-Crear una network con el driver bridge para BackEnd
+$docker network create --driver bridge BackEnd
+5.-Crear el contenedor con el nombre wordpres01 con salida en el puerto 8080 al igual que el volumen en la red FronEnd
+$docker run --name wordpress01 -d -p 80:80 --mount src=VL_wordpress01,dst=/var/www/html --network=FrontEnd wordpress:4.7.2-apache
+6.-Creación del volumen para mariadb con nombre VL_mariadb01 en el host /var/lib/mysql para almacenar información en el contenedor, a su vez definir en la BD el usuario y contraseña.
+$docker run --name mariadb01 -d -e MYSQL_ROOT_PASSWORRD=root -e MYSQL_DATABASE=wordpress01 -e MYSQL_USER=user -e MYSQL_PASSWORD=userP --network=BackEnd --mount src=VL_mariadb01,dst=/var/lib/mysql mariadb:10.0.29
+7.-Realizar la conexión con wordpress01
+$docker network connect BackEnd wordpress01
+8.-Inspeccionar mariadb para visualizar el volumen y obtener la dirección IP  
+$docker inspect mariadb01
