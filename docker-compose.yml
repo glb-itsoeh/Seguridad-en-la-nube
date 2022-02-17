@@ -1,0 +1,70 @@
+#Implementación de Node-RED, InfluxDB y Grafana en Docker
+#Se asigna la versión del docker compose
+version: '3.8'
+#Agregar los servicios 
+services:
+    #Este servicio es para la configuración de flujos para generar datos de series temporales
+    node-red:
+        #Node-red depende de la BD influx
+        depends_on:
+            - influx
+        #Nombre del contenor para node-red
+        container_name: nodered
+        #Imagen a utilizar en el contenedor
+        image: nodered/node-red:latest
+        #Definir la zona horaria
+        environment:
+            - TZ=America/Mexico_City
+        #Puerto a utilizar para el servicio en el localhost
+        ports:
+            - 1880:1880
+        #Correr el contenedor siempre
+        restart: always
+        #Creación de volúmen
+        volumes:
+            - ./data:/data
+    #Base de datos para almacenar la información de series temporales de Node-RED
+    influx:
+        #Asignar el nombre del contenedor
+        container_name: influxdb
+        #Imagen a utilizar en el contenedor
+        image: influxdb:latest
+        #Asignación de usuario y contraseña
+        environment:
+            - INFLUXDB_HTTP_AUTH_ENABLED=TRUE
+            - INFLUXDB_ADMIN_USER=brenda
+            - INFLUXDB_ADMIN_PASSWORD=2406
+            - INFLUXDB_USER=user
+            - INFLUXDB_USER_PASSWORD=user
+            - INFLUXDB_READ_USER=user
+            - INFLUXDB_READ_USER_PASSWORD=userR
+            - INFLUXDB_DB=influxdb
+        #Creación de volúmen para tener información permanente.
+        volumes:
+            - influx_data:/var/lib/influxdb
+    #Visualizar los datos de series temporales accediendo a la base de datos InfluxDB
+    grafana:
+        #Grafana dependen de la BD influx
+        depends_on:
+            - influx
+        #Asignar el nombre al contenedor
+        container_name: grafana
+        #Imagen a utilizar en el contenedor
+        image: grafana/grafana:latest
+        #Asignar usuaro y contraseña al servicio
+        environment:
+            - GF_SECURITY_ADMIN_USER=brenda
+            - GF_SECURITY_ADMIN_PASSWORD=2406
+            - GRAFANA_INFLUX_DB=influxdb
+            - GRAFANA_INFLUX_USER=brenda
+            - GRAFANA_INFLUX_PASSWORD=2406
+        #Creación de volúmenes
+        volumes:
+            - grafana_data:/var/lib/grafana
+        #Puerto a utilizar para el servicio en el localhost
+        ports:
+            - 3000:3000
+#Volúmen en grafana e influx
+volumes:
+    grafana_data:
+    influx_data:
