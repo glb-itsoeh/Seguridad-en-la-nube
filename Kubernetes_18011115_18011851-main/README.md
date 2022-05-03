@@ -1,9 +1,9 @@
 # Preparing 5-Node Kubernetes Cluster
 
-### Students:
+### Student:
 
 -   Brenda Godinez Lozano
--   Karla Lizbeth Ramirez Perez
+
 
 ## Introduction
 
