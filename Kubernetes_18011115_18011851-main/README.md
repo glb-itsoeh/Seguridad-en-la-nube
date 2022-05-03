@@ -3,6 +3,7 @@
 ### Student:
 
 -   Brenda Godinez Lozano
+-   Karla Lizbeth Ramírez Pérez
 
 
 ## Introduction
